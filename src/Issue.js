@@ -1,21 +1,29 @@
 import React from 'react';
+
 import { Link } from 'react-router-dom';
 
 class Issue extends React.Component {
   
-  constructor(props, issueId){
+  constructor(props){
+    //console.log(props.issueId);
     super(props);
     this.state = {
-      id: '',
-      issue: []
+      id: props.issueId,
+      issue: {},
+      comments:[]
     };
-    this.setState({id: issueId});
-  }
 
+  }
+  componentDidMount(){
+    this.loadIssue();
+    this.loadComments();
+    console.log(this.state);
+
+  }
   loadIssue(){
     var url = 'https://secure-crag-93015.herokuapp.com/issues/' + this.state.id;
-    console.log(url);
-    window.fetch(url, {
+    //console.log(url);
+    fetch(url, {
         // mode: 'no-cors',
       method: 'GET',
       headers: {
@@ -24,38 +32,71 @@ class Issue extends React.Component {
         //body: JSON.stringify({body: "desde react"}),
     },
     ).then(response => {
-      if (response.ok) {
         response.json().then(json => {
-          this.setState({issue: json});
+          this.setState({issue:json});
         });
-      }
+      
     });
   }
   
-  componentDidMount(){
-    this.loadIssue();
+  loadComments(){
+    
+    fetch('https://secure-crag-93015.herokuapp.com/issues/' + this.state.id + '/comments', {
+        // mode: 'no-cors',
+      method: 'GET',
+      headers: {
+        Accept: 'application/json',
+      },
+        //body: JSON.stringify({body: "desde react"}),
+    },
+    ).then(response => {
+        response.json().then(json => {
+          this.setState({comments:json});
+        });
+      
+    });
   }
+
+ 
   
   render(){
-    console.log(this.state.issue);
-    if (this.state.issue.error === '404'){
-      return(
+    return(
+      <div>
         <div>
-        <h5>This issue does not exist!</h5>
-        <Link to="/issues">
-          <button type="button">Back</button>
-        </Link>
+        <h5>Issue {this.state.issue.id}</h5>
+        <h5>{this.state.issue.Title}</h5>
+        <h5>{this.state.issue.Description}</h5>
+        <h5>{this.state.issue.Type}</h5>
+        <h5>{this.state.issue.Priority}</h5>
+        <h5>{this.state.issue.Creator}</h5>
+        <h5>{this.state.issue.Assigned}</h5>
         </div>
-      );
-    }
-    else{
-      return(
+        <br></br>
+        <br></br>
+
         <div>
-        <h5>funciona</h5>
-        <h4>{this.state.issue.title}</h4>
+        {this.state.comments.map(task => 
+              <div>
+              <h5>{task.id}</h5>
+              <h5>{task.body}</h5>
+              <h5>{task.issue_id}</h5>
+              <h5>{task.user_id}</h5>
+              <h5>{task.created_at}</h5>
+              <h5>{task.updated_at}</h5> 
+              <br></br>
+              </div>
+          
+              )}
+ 
+
+
         </div>
-      );
-    }
+      </div>
+        
+
+
+    );
+
   }
 }
 

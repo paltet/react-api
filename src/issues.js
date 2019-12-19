@@ -1,4 +1,12 @@
  import React from 'react'
+ import ReactDOM from 'react-dom'
+import Issue from './Issue';
+
+ function showid(id){
+   console.log(id);
+   ReactDOM.render(<Issue issueId={id} />, document.getElementById('root'));
+
+ }
 
   const Issues = ({ issues }) => {
       return (
@@ -27,6 +35,10 @@
               <td>{issue.Creator}</td>
               <td>{issue.Created}</td>
               <td>{issue.Updated}</td>
+              <td>
+
+                  <button type="button" id ={issue.id} onClick={event => showid(issue.id)} >Show</button>
+           </td>
             </tr>
             ))}
           </tbody>

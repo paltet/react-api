@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 import './FormIssue.css';
 //import ReactDOM from 'react-dom'
 
@@ -17,8 +18,11 @@ class FormIssue extends Component {
       token:'',
       user: [],
       names:[],
+
     };
+
   }
+  
   
   myChangeHandler = (event) => {
     this.setState({title: event.target.value});
@@ -55,38 +59,38 @@ class FormIssue extends Component {
       }
     });
   }
- 
   componentpost(){
-    window.fetch("http://example.com/api/endpoint/", {
-      method: "post",
+  
+    fetch('https://secure-crag-93015.herokuapp.com/issues', {
+      method: "POST",
+      
       headers: {
         Accept: 'application/json',
         ContentType: 'application/json'
       },
       body: JSON.stringify({
-        title: this.state.title,
-        description: this.state.description,
-        type: this.state.kind,
-        priority: this.state.type,
-        asigned: this.state.asignee
+        title : this.state.title,
+        description :this.state.description,
+        type :this.state.kind,
+        priority :this.state.type,
+        asigned : this.state.assignee,
+        token :this.state.token
       })
     })
-    .then( (response) => { 
-      if (response.ok){
-        console.log(response);
-      }
-    });
+    .then(res => res.json())
+    .catch(error => console.error('Error:', error))
+    .then(response => console.log('Success:', response));
   }
   
   render() {
   
     return (
         
-      <form onSubmit={this.componentpost()}>
+      <form >
         <h1>Create Issue</h1>   
   
         <div className="form-group">
-          <p>Enter Title:</p>
+        <label htmlFor="title">Title</label>
           <input    
             className="form-control"
             id="exampleFormControlInput1" 
@@ -97,14 +101,14 @@ class FormIssue extends Component {
           />
         </div>
         <div className="form-group">
-          <p>Description:</p>
+        <label htmlFor="description">Description</label>
           <textarea className="form-control" id="exampleFormControlTextarea1" 
             value={this.state.description}
             onChange={event => this.setState({ description: event.target.value })}
           />
         </div>
         <div className="form-group">
-          <p>Kind:</p>
+        <label htmlFor="description">Kind</label>
           <select   className="form-control" id="exampleFormControlSelect1" value={this.state.kind}
           onChange={event => this.setState({ kind: event.target.value })}>
             <option  key = 'Bug' value="Bug">Bug</option>
@@ -115,7 +119,7 @@ class FormIssue extends Component {
         </div>
   
         <div className="form-group">
-          <p>Type:</p>
+        <label htmlFor="type">Type</label>
           <select className="form-control" id="exampleFormControlSelect1" name="cars"  value={this.state.type}
           onChange={event => this.setState({ type: event.target.value })}>
             <option  key ='trivial' value='Trivial'>Trivial</option>
@@ -127,20 +131,17 @@ class FormIssue extends Component {
         </div>
     
         <div  className="form-group">
-        <p>Asignee:</p>
+        <label htmlFor="asignee">Asignee</label>
         <select className="form-control" id="exampleFormControlSelect1"    value={this.state.assignee}
         onChange={event => this.setState({ assignee: event.target.value })} >
         {this.state.names.map(task => <option value={task}>{task}</option>)} 
         </select>
         </div>
     
-        <div className="form-group">
-          <label htmlFor="exampleFormControlFile1">Example file input</label>
-          <input type="file" className="form-control-file" id="exampleFormControlFile1"></input>
-        </div>
+        
         
         <div className="form-group">
-          <p>Token:</p>
+          <label htmlFor="token">Token</label>
           <input    
             className="form-control"
             id="exampleFormControlInput1" 
@@ -150,11 +151,14 @@ class FormIssue extends Component {
             onChange={event => this.setState({ token: event.target.value })}
           />
         </div>
+        <Link to="/">
+          <button type="button"  onClick={this.componentpost}>Confirmar</button>
+        </Link>
     
-    
-        <input type="submit" value='Confirmar'/>
         <span> </span>
-        <button variant="contained">Cancelar</button>
+        <Link to="/">
+          <button type="button">Back</button>
+        </Link>
       </form>
     );
   }

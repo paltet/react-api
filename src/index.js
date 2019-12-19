@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
+import issue from './Issue';
 import App from './App';
 import Users from './users';
 import IssuesView from './IssuesView.js';
@@ -18,6 +19,9 @@ const routing = (
       <Route exact path='/issues' component={IssuesView} />
       <Route path="/users" component={Users} />
       <Route exact path='/issues/new' component={FormIssue} />
+      <Route exact path='/issue' component={issue} />
+
+      
     </div>
   </Router>
 );
